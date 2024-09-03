@@ -374,6 +374,18 @@ export default class TreeStore extends TreeEventTarget {
   }
 
   /**
+   * 设置节点是否已经加载
+   * @param key 节点key
+   * @param value 是否已加载
+   */
+  setLoaded(
+    key: TreeNodeKeyType,
+    value: boolean,) {
+    const node = this.mapData[key]
+    node._loaded = value
+  }
+
+  /**
    * 设置节点展开
    * @param key 节点 key
    * @param value 是否展开
@@ -866,9 +878,9 @@ export default class TreeStore extends TreeEventTarget {
     node._level = parentNode ? parentNode._level + 1 : 0
     nodes.forEach(
       childNode =>
-        (childNode._level = childNode._parent
-          ? childNode._parent._level + 1
-          : 0)
+      (childNode._level = childNode._parent
+        ? childNode._parent._level + 1
+        : 0)
     )
     this.insertIntoFlatData(flatIndex, nodes)
 

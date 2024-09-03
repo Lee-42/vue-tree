@@ -82,6 +82,15 @@
     &__indent-wrapper {
       display: flex;
     }
+    // 单选高亮
+    &__indent-wrapper_selected {
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    // 多选高亮
+    &__indent-wrapper_checked {
+      background: rgba(255, 255, 255, 0.95);
+    }
 
     // 容器
     &__wrapper {
@@ -120,36 +129,36 @@
 
     // 展开 icon
     &__expand {
-      i {
-        @icon-border-width: 5px;
-        // 展开图标可点击区域大小
-        @icon-clickable-size: 16px;
+      // i {
+      //   @icon-border-width: 5px;
+      //   // 展开图标可点击区域大小
+      //   @icon-clickable-size: 16px;
 
-        &::after {
-          content: '';
-          display: block;
-          width: 0;
-          height: 0;
-          position: absolute;
-          border: @icon-border-width solid transparent;
-          border-left: @icon-border-width solid @vtree-color-content;
-        }
+      // &::after {
+      //   content: '';
+      //   display: block;
+      //   width: 0;
+      //   height: 0;
+      //   position: absolute;
+      //   border: @icon-border-width solid transparent;
+      //   border-left: @icon-border-width solid @vtree-color-content;
+      // }
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        width: @icon-clickable-size;
-        height: @icon-clickable-size;
-        position: relative;
-        transition: transform 0.2s linear;
-      }
+      //   display: flex;
+      //   align-items: center;
+      //   justify-content: center;
+      //   cursor: pointer;
+      //   width: @icon-clickable-size;
+      //   height: @icon-clickable-size;
+      //   position: relative;
+      //   transition: transform 0.2s linear;
+      // }
 
       // 展开状态，顺时针旋转 90 度
       &_active {
-        i {
-          transform: rotate(90deg);
-        }
+        // i {
+        transform: rotate(90deg);
+        // }
       }
     }
 
@@ -176,8 +185,10 @@
       border-color: @vtree-color-border;
       border-radius: 2px;
       background-color: #fff;
-      transition: border-color 0.2s ease-in-out,
-        background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      transition:
+        border-color 0.2s ease-in-out,
+        background-color 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out;
 
       &::after {
         content: '';
@@ -195,7 +206,7 @@
         transition: all 0.2s ease-in-out;
       }
 
-      @media(any-hover:hover) {
+      @media (any-hover: hover) {
         &:hover {
           border-color: @vtree-color-disabled;
         }
@@ -216,12 +227,11 @@
           transform: rotate(45deg) scale(1);
         }
 
-        @media(any-hover:hover) {
+        @media (any-hover: hover) {
           &:hover {
             .active-color();
           }
         }
-
       }
 
       &_indeterminate {
@@ -235,12 +245,11 @@
           transform: scale(1);
         }
 
-        @media(any-hover:hover) {
+        @media (any-hover: hover) {
           &:hover {
             .active-color();
           }
         }
-
       }
 
       &_disabled {
@@ -248,7 +257,7 @@
         border-color: @vtree-color-border;
         background-color: @vtree-color-divider;
 
-        @media(any-hover:hover) {
+        @media (any-hover: hover) {
           &:hover {
             border-color: @vtree-color-border;
             background-color: @vtree-color-divider;
@@ -279,7 +288,7 @@
       white-space: nowrap;
       word-wrap: none;
 
-      @media(any-hover:hover) {
+      @media (any-hover: hover) {
         &:hover {
           background-color: lighten(@vtree-color-light-primary, 28%);
         }
@@ -292,7 +301,7 @@
 
         .selected();
 
-        @media(any-hover:hover) {
+        @media (any-hover: hover) {
           &:hover {
             .selected();
           }
@@ -321,7 +330,9 @@
 
     &-enter-active,
     &-leave-active {
-      transition: opacity .2s, grid-template-rows .2s;
+      transition:
+        opacity 0.2s,
+        grid-template-rows 0.2s;
     }
   }
 }

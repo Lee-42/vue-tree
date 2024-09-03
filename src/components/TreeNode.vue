@@ -1,5 +1,5 @@
 <template>
-  <div :class="indentWrapperCls">
+  <div :class="indentWrapperCls" @click="handleExpand">
     <template v-if="showLine">
       <template v-for="(level, index) in data._level" :key="level">
         <svg
@@ -7,7 +7,7 @@
           preserveAspectRatio="none"
           :style="{
             alignSelf: 'stretch',
-            width: `${nodeIndent}px`,
+            width: `${nodeIndent}px`
           }"
         >
           <polyline
@@ -23,7 +23,7 @@
     <div
       :class="wrapperCls"
       :style="{
-        paddingLeft: showLine ? 'none' : `${data._level * nodeIndent}px`,
+        paddingLeft: showLine ? 'none' : `${data._level * nodeIndent}px`
       }"
     >
       <div :class="dropBeforeCls"></div>
@@ -31,10 +31,26 @@
         <!-- 展开按钮 -->
         <div :class="expandCls">
           <!-- 外层用于占位，icon 用于点击 -->
-          <i
-            v-show="!data?.isLeaf && !data?._loading"
-            @click="handleExpand"
-          ></i>
+          <div v-show="!data?.isLeaf && !data?._loading">
+            <slot name="expandIcon">
+              <svg
+                t="1722930084983"
+                class="icon"
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                p-id="3537"
+                width="20"
+                height="20"
+              >
+                <path
+                  d="M357.957 167.176l-49.463 48.973 294.308 296.327-296.782 293.831 49.044 49.381 346.239-342.809z"
+                  fill="#bfbfbf"
+                  p-id="3538"
+                ></path>
+              </svg>
+            </slot>
+          </div>
           <LoadingIcon v-if="data?._loading" :class="loadingIconCls" />
         </div>
 
@@ -64,22 +80,26 @@
 </template>
 
 <script lang="ts">
-type PickedProps = Required<Pick<TreeProps,
-  'titleField' |
-  'keyField' |
-  'checkable' |
-  'selectable' |
-  'unselectOnClick' |
-  'disableAll' |
-  'draggable' |
-  'droppable' |
-  'nodeIndent'
->> & Pick<TreeProps, 'render' | 'showLine'>
+type PickedProps = Required<
+  Pick<
+    TreeProps,
+    | 'titleField'
+    | 'keyField'
+    | 'checkable'
+    | 'selectable'
+    | 'unselectOnClick'
+    | 'disableAll'
+    | 'draggable'
+    | 'droppable'
+    | 'nodeIndent'
+  >
+> &
+  Pick<TreeProps, 'render' | 'showLine'>
 
 export type TreeNodeProps = PickedProps & {
-  data: TreeNode,
-  getNode: GetNodeFn,
-  noSiblingNodeMap: Record<string, true>,
+  data: TreeNode
+  getNode: GetNodeFn
+  noSiblingNodeMap: Record<string, true>
 }
 </script>
 
@@ -90,7 +110,7 @@ import {
   computed,
   getCurrentInstance,
   h,
-  toRef,
+  toRef
 } from 'vue'
 import { TreeNode } from '../store'
 import LoadingIcon from './LoadingIcon.vue'
@@ -113,7 +133,7 @@ const showLineParams = computed(() => {
     width: 1,
     type: showLineType.solid,
     color: '#D3D3D3',
-    polyline: false,
+    polyline: false
   }
   let params: Required<ShowLine> = defaultParams
   if (typeof props.showLine === 'object') {
@@ -121,13 +141,15 @@ const showLineParams = computed(() => {
       width: props.showLine.width ?? defaultParams.width,
       type: props.showLine.type ?? defaultParams.type,
       color: props.showLine.color ?? defaultParams.color,
-      polyline: props.showLine.polyline ?? defaultParams.polyline,
+      polyline: props.showLine.polyline ?? defaultParams.polyline
     }
   }
   return params
 })
 
-const strokeWidth = computed(() => showLineParams.value.width * 100 / props.nodeIndent)
+const strokeWidth = computed(
+  () => (showLineParams.value.width * 100) / props.nodeIndent
+)
 
 const strokeDasharray = computed(() => {
   switch (showLineParams.value.type) {
@@ -140,9 +162,15 @@ const strokeDasharray = computed(() => {
 })
 
 const polylinePoints = (isDirectParentLine: boolean) => {
-  if (!showLineParams.value.polyline || !isDirectParentLine) return '50,0 50,100'
+  if (!showLineParams.value.polyline || !isDirectParentLine)
+    return '50,0 50,100'
   const parent = props.getNode(props.data[props.keyField])?._parent
-  if (parent && props.noSiblingNodeMap[parent[props.keyField]] && props.noSiblingNodeMap[props.data[props.keyField]]) return '50,0 50,50 100,50 50,50'
+  if (
+    parent &&
+    props.noSiblingNodeMap[parent[props.keyField]] &&
+    props.noSiblingNodeMap[props.data[props.keyField]]
+  )
+    return '50,0 50,50 100,50 50,50'
   return '50,0 50,50 100,50 50,50 50,100'
 }
 
@@ -156,11 +184,11 @@ const {
   expandCls,
   loadingIconCls,
   checkboxCls,
-  titleCls,
+  titleCls
 } = useTreeNodeCls(props, {
   dragoverBody,
   dragoverBefore,
-  dragoverAfter,
+  dragoverAfter
 })
 
 const fullData = computed(() => {
@@ -207,7 +235,7 @@ const dropListeners = computed(() => {
 })
 
 function handleExpand(): void {
-  if (props.data?.isLeaf) return
+  if (props.data?.isLeaf || props.checkable) return
   emit('expand', fullData.value)
 }
 
@@ -264,8 +292,7 @@ function resetDragoverFlags(
   if (!isLeaveOrDrop) {
     if (hoverPart === dragHoverPartEnum.before) dragoverBefore.value = true
     else if (hoverPart === dragHoverPartEnum.body) dragoverBody.value = true
-    else if (hoverPart === dragHoverPartEnum.after)
-      dragoverAfter.value = true
+    else if (hoverPart === dragHoverPartEnum.after) dragoverAfter.value = true
   }
 }
 
@@ -304,6 +331,6 @@ function handleDrop(e: DragEvent): void {
 }
 
 defineOptions({
-  name: 'VTreeNode',
+  name: 'VTreeNode'
 })
 </script>

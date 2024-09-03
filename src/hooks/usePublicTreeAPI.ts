@@ -5,7 +5,7 @@ import { ITreeNodeOptions } from "../store/tree-node"
 import { FilterFunctionType } from "../store/tree-store"
 import { TreeProps } from "../components/Tree.vue"
 
-type IUsePublicTreeAPIProps = Required<Pick<TreeProps, 
+type IUsePublicTreeAPIProps = Required<Pick<TreeProps,
   'selectable' |
   'checkable' |
   'separator' |
@@ -77,6 +77,12 @@ export const usePublicTreeAPI = (
   }
   function clearSelected(): void {
     nonReactive.store.clearSelected()
+  }
+  function setLoaded(
+    key: TreeNodeKeyType,
+    value: boolean,
+  ): void {
+    nonReactive.store.setLoaded(key, value)
   }
   function setExpand(
     key: TreeNodeKeyType,
@@ -230,7 +236,7 @@ export const usePublicTreeAPI = (
           setData(root as AnyPropsArrayType)
         }
       })
-      .catch(() => {})
+      .catch(() => { })
       .then(() => {
         isRootLoading.value = false
       })
@@ -246,6 +252,7 @@ export const usePublicTreeAPI = (
     clearChecked,
     setSelected,
     clearSelected,
+    setLoaded,
     setExpand,
     setExpandKeys,
     setExpandAll,
